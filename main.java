@@ -1,40 +1,31 @@
-
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService;
 
-public class Main{
-
-	public static void main(String[] args) {
-		SimpleArray sharedSimpleArray = new SimpleArray(9);
-		Roll[] Roller = new Roll[3];
-		for(int i = 0; i<Roller.length;i++)
-		{
-		
-			Roller[i]= new Roll(Dice.roll() ,sharedSimpleArray);	
-		}
-
-		System.out.println("Starting executor");
-		ExecutorService executor = Executors.newCachedThreadPool();
-		
-
-		for(int i = 0;i<Roller.length;i++){
-			
-			executor.execute (Roller[i]);
-		}	
-		executor.shutdown();
-		System.out.println("Task");
-		try
-		 {
-			boolean tasksEnded = executor.awaitTermination(1, TimeUnit.MINUTES );
-			if ( tasksEnded )
-				System.out.println( sharedSimpleArray ); 
-			else
-				System.out.println("Timed out while waiting for tasks to finish." );
-			} 
-		catch ( InterruptedException ex )
-		 {
-		 System.out.println( "Interrupted while wait for tasks to finish." ); 
-	}
-	}
+public class Main
+{
+  public static void main(String[] args)
+  {
+    DiceRoller[] Roller = new DiceRoller[25];
+    //makes 25 dicerolllers
+    
+    for( int i = 0; i<Roller.length;i++)
+    {
+      Roller[i] = new DiceRoller("Task"+i);
+      //creates a task with an array
+    }
+    
+    System.out.println("Begininng Executor ");
+    ExecutorService TE = Executors.newCachedThreadPool();
+    
+    for(int i= 0; i<Roller.length; i++)
+    {
+      TE.execute(Roller[i]);
+      //executes with an array
+    }
+    
+    TE.shutdown();
+    //closes the executor
+    
+    System.out.println("Task has begun. The main has ended.");
+  }
 }
